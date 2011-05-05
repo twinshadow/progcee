@@ -1,3 +1,9 @@
+/*
+ * var-args
+ * Two examples of using variable arguments and the stdarg headers
+ *
+ */
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

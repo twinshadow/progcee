@@ -1,17 +1,8 @@
-cmdline.o: cmdline.c
-	gcc -o $@ $<
-
-hello.o: hello.c
-	gcc -o $@ $<
-
-number-guess.o: number-guess.c
-	gcc -o $@ $<
+CFLAGS = -O2 -g
+CC = clang
 
 prime.o: prime.c
-	gcc -lm -o $@ $<
-
-var-args.o: var-args.c
-	gcc -o $@ $<
+	${CC} -lm -o $@ $<
 
 clean:
 	@rm -v *.o *.out

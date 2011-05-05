@@ -1,3 +1,9 @@
+/*
+ * hello
+ * Prints "Hello, World..."
+ *
+ */
+
 #include <stdio.h>
 
 int main() {

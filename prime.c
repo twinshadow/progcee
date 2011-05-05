@@ -1,3 +1,9 @@
+/*
+ * prime
+ * Displays prime numbers up to 120
+ *
+ */
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,11 +35,9 @@ char * prime_sieve (int n) {
   int i,j,m;
   char *sieve;
 
-  if (n < 2) assert(!"Not an appropriate range for a prime sieve");
-
   sieve = calloc (n+1, sizeof(char));
-  assert(sieve); /* Die if the alloc fails */
-  m =     (int) sqrt((double) n);
+  if (sieve == NULL) exit(1); /* Die if the alloc fails */
+  m = (int) sqrt((double) n);
 
   sieve[0] = 1;
   sieve[1] = 1;

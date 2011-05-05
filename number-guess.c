@@ -1,3 +1,9 @@
+/*
+ * number-guess
+ * A number guessing game
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
