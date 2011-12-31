@@ -20,7 +20,9 @@ void free_node (Node link) {
     free_node (link->gt);
   }
 
-  free (link);
+  data = NULL
+  link = NULL
+  /*free (link);*/
 }
 
 Node init_node (int num) {

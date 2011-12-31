@@ -1,10 +1,10 @@
-CFLAGS = -O2 -g
-CC = clang
+CFLAGS = -O0 -g -Wall -Werror
+CC = gcc
 
-prime.o: prime.c
-	${CC} -lm -o $@ $<
+primes.o: primes.c
+	${CC} ${CFLAGS} -lm -o $@ $<
 
 clean:
-	@rm -v *.o *.out
+	@rm -fv *.o *.out
 
 .PHONY: clean
