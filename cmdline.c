@@ -1,7 +1,7 @@
-/* 
+/*
  * cmdline ...
  * Prints the arguments entered on the command-line
- * 
+ *
  */
 
 #include <stdio.h>
