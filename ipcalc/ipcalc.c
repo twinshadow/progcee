@@ -1,17 +1,25 @@
-#include <stdlib.h>
+#include <errno.h>
+#include <math.h>
 #include <stdio.h>
-#include <arpa/inet.h>
+#include <stdlib.h>
 #include <string.h>
+#include <arpa/inet.h>
 #include "ipcalc.h"
 
 int
-pton4or6(const char *addr)
+_pton4or6(const char *addr)
 {
-	if(index(addr, ':') != NULL)
+	if(strchr(addr, ':') != NULL)
 		return(AF_INET6);
 	return(AF_INET);
 };
 
+/*
+ * I just learned that I don't want to mess with byte-ordering. Commented out
+ * until I can put it somewhere else.
+ */
+
+/*
 static void
 inaddr2buf(struct in_addr addr, unsigned char *buf)
 {
@@ -22,21 +30,26 @@ inaddr2buf(struct in_addr addr, unsigned char *buf)
 	}
 	buf[i] = '\0';
 }
+*/
 
 int
-in_subnet()
+in_subnet(struct oaddr_t oa, struct oaddr_t *subnet)
 {
-
+	int i;
+	for(i = subnet->len - 1; i >= 0; i--)
+	{
+	}
+	return(0);
 }
 
 int
-ipcalc_pton(int af, const char *foo, unsigned char *buf)
+ipcalc_pton(int af, const char *str, struct oaddr_t *oa)
 {
-	int s = inet_pton(af, foo, buf);
+	int s = inet_pton(oa->af, str, oa->addr);
 	if (s <= 0)
 	{
 		if (s == 0)
-			fprintf(stderr, "Not in presentation format: %s", foo);
+			fprintf(stderr, "Not in presentation format: %s", str);
 		else
 			perror("inet_pton");
 		return(1);
@@ -57,7 +70,7 @@ oaddr_ntop(struct oaddr_t *oa, char *str)
 	return(0);
 }
 
-static void
+void
 oaddr_decr(struct oaddr_t *oa)
 {
 	int i;
@@ -69,7 +82,7 @@ oaddr_decr(struct oaddr_t *oa)
 	}
 }
 
-static void
+void
 oaddr_incr(struct oaddr_t *oa)
 {
 	int i;
@@ -81,15 +94,14 @@ oaddr_incr(struct oaddr_t *oa)
 	}
 }
 
-int
-oaddr_new(struct oaddr_t *oa)
+struct oaddr_t *
+oaddr_new()
 {
 	struct oaddr_t *oax;
 	oax = calloc(1, sizeof(struct oaddr_t));
 	oax->addr = calloc(16, sizeof(unsigned char));
 	oax->mask = calloc(16, sizeof(unsigned char));
-	oa = oax;
-	return(0);
+	return oax;
 }
 
 int
@@ -98,37 +110,81 @@ oaddr_destroy(struct oaddr_t *oa)
 	free(oa->addr);
 	free(oa->mask);
 	free(oa);
+	return(0);
 }
 
-int
-oaddr_from_str(const char *addr, struct oaddr_t *oa)
+struct oaddr_t *
+oaddr_from_str(const char *addr)
 {
-	int m, s;
-	struct oaddr_t *oax;
-	if(oaddr_new(oax))
-		return(1);
 	char *addrbuf;
-	char *maskbuf;
-	m = sscanf(addr,"%128[^/]/%16[^\n]", addrbuf, maskbuf);
-	if(m == 1)
+	char *maskbuf = NULL;
+	char *m;
+	int i, s = 0;
+	int div, mod;
+	struct oaddr_t *oax = oaddr_new();
+
+	addrbuf = calloc(128, sizeof(char));
+	strcpy(addrbuf, addr);
+	/* CIDR notation */
+	if((m = strchr(addrbuf, '/')) != NULL)
 	{
-		maskbuf = "32";
+		strtok(addrbuf, "/");
+		maskbuf = strtok(NULL, "/");
 	}
-	else if (m == 0)
-	{
-		return(1);
-	}
-	oax->af = pton4or6(addr);
+
+	oax->af = _pton4or6(addr);
 	oax->len = (oax->af == AF_INET) ? 4 : 16;
-	s = inet_pton(oax->af, addr, oax->addr);
+
+	if(maskbuf != NULL)
+	{
+		/* TODO: test for dotted-decimal mask */
+		/* decimal */
+		errno = 0;
+		i = strtol(maskbuf, NULL, 10);
+		if(errno != 0)
+			perror("oaddr_from_str maskbuf");
+		div = i / 8;
+		mod = i % 8;
+		memset(oax->mask, 255, div);
+		oax->mask[div + 1] = (unsigned char)pow(2, mod);
+	}
+	else
+	{
+		memset(oax->mask, 255, oax->len);
+	}
+
+	s = inet_pton(oax->af, addrbuf, oax->addr);
+
 	if (s <= 0)
 	{
 		if (s == 0)
 			fprintf(stderr, "Not in presentation format\n");
 		else
 			perror("inet_pton");
+		return(NULL);
+	}
+	return(oax);
+}
+
+int
+oaddr_to_str(const char *addr, struct oaddr_t *oa)
+{
+	int i;
+	char addrbuf[INET6_ADDRSTRLEN];
+	char maskbuf[33];
+
+	if (inet_ntop(oa->af, oa->addr, addrbuf, INET6_ADDRSTRLEN) == NULL)
+	{
+		perror("oaddr_ntop");
 		return(1);
 	}
-	oa = oax;
+
+	if(maskbuf == NULL)
+		return(1);
+
+	for(i = 0; i < oa->len; i++)
+	{
+	}
+
 	return(0);
 }
