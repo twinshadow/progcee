@@ -3,6 +3,13 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+struct oaddr
+{
+	int len;
+	int af;
+	unsigned char *buf;
+};
+
 int
 pton4or6(const char *addr)
 {
@@ -11,10 +18,12 @@ pton4or6(const char *addr)
 	return(AF_INET);
 };
 
-int ipr_pton(int af, const char *foo, unsigned char *buf)
+int ipr_pton(const char *foo, struct oaddr *oa)
 {
 	int s;
-	s = inet_pton(af, foo, buf);
+	oa->af = pton4or6(foo);
+	oa->len = (oa->af == AF_INET) ? 4 : 16;
+	s = inet_pton(oa->af, foo, oa->buf);
 	if (s <= 0)
 	{
 		if (s == 0)
@@ -27,9 +36,9 @@ int ipr_pton(int af, const char *foo, unsigned char *buf)
 	return(0);
 }
 
-int ipr_ntop(int af, unsigned char *buf, char *str)
+int ipr_ntop(struct oaddr *oa, char *str)
 {
-	if (inet_ntop(af, buf, str, INET6_ADDRSTRLEN) == NULL)
+	if (inet_ntop(oa->af, oa->buf, str, INET6_ADDRSTRLEN) == NULL)
 	{
 		perror("inet_ntop");
 		return(1);
@@ -39,22 +48,18 @@ int ipr_ntop(int af, unsigned char *buf, char *str)
 }
 
 int
-netaddr_incr(int af, unsigned char *buf)
+netaddr_incr(struct oaddr *oa)
 {
-	int i, len;
-	if(af == AF_INET)
-		len = 3;
-	else
-		len = 15;
-	for(i = len; i >= 0; i--)
+	int i;
+	for(i = oa->len - 1; i >= 0; i--)
 	{
-		if(buf[i] == 255)
+		if(oa->buf[i] == 255)
 		{
-			buf[i]++;
+			oa->buf[i]++;
 		}
 		else
 		{
-			buf[i]++;
+			oa->buf[i]++;
 			break;
 		}
 	}
@@ -65,32 +70,24 @@ int
 main(int argc, char **argv)
 {
 	char *myp = calloc(sizeof(char), 80);
-	int i, len;
-	unsigned char *ipr;
-	int af = pton4or6(argv[1]);
-	if(af == AF_INET)
+	int i;
+	struct oaddr *ipr = calloc(sizeof(struct oaddr), 1);
+	ipr->buf = calloc(16, sizeof(unsigned char));
+
+	if(ipr_pton(argv[1], ipr))
 	{
-		ipr = malloc(sizeof(struct in_addr));
-		len = 4;
+		fprintf(stderr, "Whups, pton failed.\n");
+		return(1);
 	}
-	else
+	for(i = 0; i < ipr->len; i++)
 	{
-		ipr = malloc(sizeof(struct in6_addr));
-		len = 16;
+		printf("%d\n", ipr->buf[i]);
 	}
 
-	ipr_pton(af, argv[1], ipr);
-	/*
-	for(i = 0; i < len; i++)
+	for(i = 0; i < 10; i++)
 	{
-		printf("%d\n", ipr[i]);
-	}
-	*/
-
-	for(i = 0; i < 8000; i++)
-	{
-		netaddr_incr(af, ipr);
-		ipr_ntop(af, ipr, myp);
+		netaddr_incr(ipr);
+		ipr_ntop(ipr, myp);
 		printf("%s\n", myp);
 	}
 

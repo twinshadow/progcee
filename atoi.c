@@ -7,13 +7,13 @@
  */
 int main(int argc, const char *argv[])
 {
-  int i;
+	int i;
 
-  for (i=1; i < argc; i+=1) {
-    printf ("atoi: %d, ", atoi(argv[i]));
-    printf ("atol: %ld, ", atol(argv[i]));
-    printf ("atoll: %lld\n", atoll(argv[i]));
-  }
+	for (i=1; i < argc; i+=1) {
+		printf ("atoi: %d\n, ", atoi(argv[i]));
+		printf ("atol: %ld\n, ", atol(argv[i]));
+		printf ("atoll: %lld\n", atoll(argv[i]));
+	}
 
-  return 0;
+	return 0;
 }
