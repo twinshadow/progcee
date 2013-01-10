@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <arpa/inet.h>
-#include "ipcalc.h"
+#include "libipcalc.h"
 
 int
 _pton4or6(const char *addr)
@@ -105,7 +105,7 @@ oaddr_new()
 }
 
 int
-oaddr_destroy(struct oaddr_t *oa)
+oaddr_free(struct oaddr_t *oa)
 {
 	free(oa->addr);
 	free(oa->mask);
@@ -154,6 +154,7 @@ oaddr_from_str(const char *addr)
 	}
 
 	s = inet_pton(oax->af, addrbuf, oax->addr);
+	free(addrbuf);
 
 	if (s <= 0)
 	{

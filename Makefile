@@ -8,7 +8,7 @@ prime: prime.c
 	${CC} ${CFLAGS} -lm -o $@ $^
 
 iprange: iprange.c
-	${CC} -I${PWD}/ipcalc ${CFLAGS} -lm -o $@ $^ ipcalc/ipcalc.o
+	${CC} -I${PWD}/ipcalc -L${PWD}/ipcalc ${CFLAGS} -lipcalc -o $@ $^
 
 clean:
 	@rm -f *.o *.out

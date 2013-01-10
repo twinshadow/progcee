@@ -24,6 +24,8 @@ main(int argc, char **argv)
 		oaddr_ntop(ipr, myp);
 		printf("%s\n", myp);
 	}
+	oaddr_free(ipr);
+	free(myp);
 
 	return(0);
 }
