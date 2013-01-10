@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include "ipcalc.h"
+#include "libipcalc.h"
 
 int
 main(int argc, char **argv)

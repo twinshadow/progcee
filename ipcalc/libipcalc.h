@@ -9,7 +9,7 @@ struct oaddr_t
 	unsigned char *mask;
 };
 
-int in_subnet(struct oaddr_t oa, struct oaddr_t *subnet);
+bool in_subnet(struct oaddr_t *oa, struct oaddr_t *subnet);
 int ipcalc_pton(int af, const char *str, struct oaddr_t *oa);
 int oaddr_ntop(struct oaddr_t *oa, char *str);
 void oaddr_decr(struct oaddr_t *oa);

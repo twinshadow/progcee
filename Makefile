@@ -10,6 +10,9 @@ prime: prime.c
 iprange: iprange.c
 	${CC} -I${PWD}/ipcalc -L${PWD}/ipcalc ${CFLAGS} -lipcalc -o $@ $^
 
+subnetcheck: subnetcheck.c
+	${CC} -I${PWD}/ipcalc -L${PWD}/ipcalc ${CFLAGS} -lipcalc -o $@ $^
+
 clean:
 	@rm -f *.o *.out
 
