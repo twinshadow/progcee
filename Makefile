@@ -10,6 +10,9 @@ prime: prime.c
 iprange: iprange.c
 	${CC} -I${PWD}/ipcalc -L${PWD}/ipcalc ${CFLAGS} -lipcalc -o $@ $^
 
+chess: chess.c
+	${CC} ${CFLAGS} -ludev -lcurses -o $@ $^
+
 subnetcheck: subnetcheck.c
 	${CC} -I${PWD}/ipcalc -L${PWD}/ipcalc ${CFLAGS} -lipcalc -o $@ $^
 
