@@ -75,31 +75,47 @@ hiddev_path()
 	return(devpath);
 }
 
-int main(int argc, char **argv)
+int
+hiddev_fd()
 {
-	int fd;
-	int x, y, res;
 	const char *devpath;
-	char buf[256];
-	char *row;
+	int fd = -1;
 
 	devpath = hiddev_path();
 	/* open the device */
 	if(devpath == NULL)
 	{
 		fprintf(stderr, "Device not found.\n");
-		return(1);
+		return(-1);
 	}
 
 	fd = open(devpath, O_RDONLY | O_NONBLOCK);
 	if(fd < 0)
 	{
-		perror("Unable to open device");
+		perror("Unable to open device.\n");
+		return(-1);
+	}
+
+	return(fd);
+}
+
+int main(int argc, char **argv)
+{
+	int fd;
+	int x, y, res;
+	char buf[256];
+	char row[72];
+
+	fd = hiddev_fd();
+	if(fd < 0)
+	{
 		return(1);
 	}
 
 	/* Begin the main loop. Finally */
 	memset(buf, 0x0, sizeof(buf));
+	memset(row, '\0', sizeof(row));
+
 	initscr();
 	cbreak();
 	noecho();
@@ -110,19 +126,19 @@ int main(int argc, char **argv)
 	while(1)
 	{
 		res = read(fd, buf, 16);
-		if (res < 0) {
+		if(res < 0)
+		{
 			if(errno == EAGAIN)
 				continue;
 			perror("read");
-		} else {
-			if(row == NULL)
-				row = calloc((res * res) + res, sizeof(char));
-			clear();
-			for (x = 0; x < res; x++)
+		}
+		else
+		{
+			for(x = 0; x < res; x++)
 			{
 				for(y = 0; y < res; y++)
 					row[y + (x * (res + 1))] = ((0x80 >> x) & buf[y]) ? '*' : '0';
-				mvprintw(x, 1, (const char *)&row[x * (res + 1)]);
+				mvprintw(1+x, 1, (const char *)&row[x * (res + 1)]);
 			}
 		}
 		usleep(1000);
