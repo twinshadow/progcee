@@ -19,24 +19,23 @@ const char *bus_str(int bus);
 #define VENDOR_ID 0x1941
 #define PRODUCT_ID 0x8021
 
-int main(int argc, char **argv)
+const char *
+hiddev_path()
 {
-	int fd;
-	int i, res;
-	const char *devpath;
-	char buf[256];
 	struct udev *udev;
 	struct udev_enumerate *enumerate;
 	struct udev_list_entry *devices,
 			       *dev_list_entry;
-	struct udev_device *dev;
+	struct udev_device *dev = NULL;
+	const char *devpath;
 
 	/* Udev madness */
 	udev = udev_new();
 	if(udev == NULL)
 	{
 		fprintf(stderr, "Can't create udev\n");
-		return(1);
+		udev_unref(udev);
+		return NULL;
 	}
 
 	enumerate = udev_enumerate_new(udev);
@@ -52,11 +51,13 @@ int main(int argc, char **argv)
 		devpath = udev_device_get_devnode(dev);
 
 		dev = udev_device_get_parent_with_subsystem_devtype(
-							dev, "usb", "usb_device");
+					dev, "usb", "usb_device");
 		if (dev == NULL)
 		{
 			fprintf(stderr, "Unable to find parent usb device.\n");
-			return(1);
+			udev_enumerate_unref(enumerate);
+			udev_unref(udev);
+			return NULL;
 		}
 
 		if(strtol(udev_device_get_sysattr_value(dev,"idVendor"), NULL, 16) == VENDOR_ID
@@ -69,7 +70,20 @@ int main(int argc, char **argv)
 
 	udev_enumerate_unref(enumerate);
 	udev_unref(udev);
+	udev_device_unref(dev);
 
+	return(devpath);
+}
+
+int main(int argc, char **argv)
+{
+	int fd;
+	int x, y, res;
+	const char *devpath;
+	char buf[256];
+	char *row;
+
+	devpath = hiddev_path();
 	/* open the device */
 	if(devpath == NULL)
 	{
@@ -101,16 +115,22 @@ int main(int argc, char **argv)
 				continue;
 			perror("read");
 		} else {
+			if(row == NULL)
+				row = calloc((res * res) + res, sizeof(char));
 			clear();
-			mvprintw(1, 0, "read() read %d bytes:", res);
-			for (i = 0; i < res; i++)
-				mvprintw(2, 8 + (i * 3),"%hhx", buf[i]);
+			for (x = 0; x < res; x++)
+			{
+				for(y = 0; y < res; y++)
+					row[y + (x * (res + 1))] = ((0x80 >> x) & buf[y]) ? '*' : '0';
+				mvprintw(x, 1, (const char *)&row[x * (res + 1)]);
+			}
 		}
+		usleep(1000);
 		refresh();
 	}
 
 	endwin();
 	close(fd);
-	udev_device_unref(dev);
+
 	return(0);
 }
