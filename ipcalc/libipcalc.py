@@ -17,7 +17,7 @@ libipcalc = cdll.LoadLibrary("libipcalc.so")
 
 class Address(object):
     def __init__(self, addr):
-        self.oaddr = c_void_p(libipcalc.oaddr_from_str(addr))
+        self.oaddr = cast(libipcalc.oaddr_from_str(addr), oaddr_p)
     def __str__(self):
         out = create_string_buffer(128)
         libipcalc.oaddr_ntop(self.oaddr, out)
