@@ -1,4 +1,5 @@
 #include <linux/kobject.h>
+#include <linux/printk.h>
 #include <linux/string.h>
 #include <linux/sysfs.h>
 #include <linux/slab.h>
@@ -54,24 +55,29 @@ static const struct sysfs_ops charbuf_sysfs_ops = {
 	.store = charbuf_attr_store,
 };
 
-/* 
+/*
  * buffer attribute
  */
 static ssize_t buffer_show(struct charbuf_obj *charbuf_obj, struct charbuf_attribute *attr,
 			char *buf)
 {
-	return sprintf(buf, "%s\n", charbuf_obj->buffer);
+	return sprintf(buf, "%s", charbuf_obj->buffer);
 }
 
 static ssize_t buffer_store(struct charbuf_obj *charbuf_obj, struct charbuf_attribute *attr,
 			 const char *buf, size_t count)
 {
-	sscanf(buf, "%su", charbuf_obj->buffer);
+	kfree(charbuf_obj->buffer);
+	charbuf_obj->buffer = kzalloc(count, GFP_KERNEL);
+	if (charbuf_obj->buffer == NULL)
+		return 0;
+	memcpy(charbuf_obj->buffer, buf, count);
 	return count;
 }
 
 static struct charbuf_attribute buffer_attribute =
 	__ATTR(buffer, 0666, buffer_show, buffer_store);
+
 
 /*
  * bool attributes
@@ -79,39 +85,60 @@ static struct charbuf_attribute buffer_attribute =
 static ssize_t b_show(struct charbuf_obj *charbuf_obj, struct charbuf_attribute *attr,
 		      char *buf)
 {
-	return sprintf(buf, "%d\n", 0);
+	if (strcmp(attr->attr.name, "rot13") == 0)
+		return sprintf(buf, "%d\n", charbuf_obj->rot13);
+	else if (strcmp(attr->attr.name, "reverse") == 0)
+		return sprintf(buf, "%d\n", charbuf_obj->reverse);
+	return 0;
 }
 
 static ssize_t b_store(struct charbuf_obj *charbuf_obj, struct charbuf_attribute *attr,
 		       const char *buf, size_t count)
 {
-	int var;
-
+	int i, j, var, len;
 	sscanf(buf, "%du", &var);
 	if (strcmp(attr->attr.name, "clear") == 0)
 	{
-		//lock
-		//free and realloc
-		//unlock
-		count = 1;
+		kfree(charbuf_obj->buffer);
+		charbuf_obj->buffer = kzalloc(1, GFP_KERNEL);
+		if (charbuf_obj->buffer == NULL)
+			return 1;
 	}
 	else if (strcmp(attr->attr.name, "rot13") == 0)
 	{
-		//lock
-		//unlock
-		count = 1;
+		len = strlen(charbuf_obj->buffer) - 1;
+		for(i = 0; i < len; i++)
+		{
+			if(charbuf_obj->buffer[i] >= 'a' && charbuf_obj->buffer[i] <= 'z')
+			{
+				charbuf_obj->buffer[i] += 13;
+				if(charbuf_obj->buffer[i] > 'z')
+					charbuf_obj->buffer[i] -= 26;
+			}
+			else if(charbuf_obj->buffer[i] >= 'A' && charbuf_obj->buffer[i] <= 'Z')
+			{
+				charbuf_obj->buffer[i] += 13;
+				if(charbuf_obj->buffer[i] > 'Z')
+					charbuf_obj->buffer[i] -= 26;
+			}
+		}
 	}
-	else
+	else if (strcmp(attr->attr.name, "reverse") == 0)
 	{
-		//lock
-		//unlock
-		count = 1;
+		// XXX: this should ignore newlines!
+		len = strlen(charbuf_obj->buffer) - 1;
+		var = len / 2;
+		for(i = 0; i < var; i++)
+		{
+			j = len - i;
+			charbuf_obj->buffer[j] = charbuf_obj->buffer[i] ^ charbuf_obj->buffer[j];
+			charbuf_obj->buffer[i] = charbuf_obj->buffer[i] ^ charbuf_obj->buffer[j];
+			charbuf_obj->buffer[j] = charbuf_obj->buffer[i] ^ charbuf_obj->buffer[j];
+		}
 	}
 	return count;
 }
 
-static struct charbuf_attribute limit_attribute =
-	__ATTR(limit, 0666, b_show, b_store);
 static struct charbuf_attribute clear_attribute =
 	__ATTR(clear, 0666, b_show, b_store);
 static struct charbuf_attribute rot13_attribute =
@@ -125,7 +152,6 @@ static struct charbuf_attribute reverse_attribute =
  */
 static struct attribute *charbuf_default_attrs[] = {
 	&buffer_attribute.attr,
-	&limit_attribute.attr,
 	&clear_attribute.attr,
 	&rot13_attribute.attr,
 	&reverse_attribute.attr,
@@ -154,6 +180,13 @@ static struct charbuf_obj *create_charbuf_obj(const char *name)
 
 	retval = kobject_init_and_add(&charbuf->kobj, &charbuf_ktype, NULL, "%s", name);
 	if (retval)
+	{
+		kobject_put(&charbuf->kobj);
+		return NULL;
+	}
+
+	charbuf->buffer = kzalloc(1, GFP_KERNEL);
+	if(charbuf->buffer == NULL)
 	{
 		kobject_put(&charbuf->kobj);
 		return NULL;

@@ -6,7 +6,6 @@ struct charbuf_obj
 {
 	struct kobject kobj;
 	char *buffer;
-	ssize_t limit;
 	int clear;
 	int rot13;
 	int reverse;
