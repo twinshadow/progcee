@@ -4,6 +4,9 @@ socks_rx: socks_rx.c libsocks.o
 socks_tx: socks_tx.c libsocks.o
 	${CC} ${CFLAGS} -lreadline -o $@ $^
 
+isprime: isprime.c
+	${CC} ${CFLAGS} -lm -o $@ $^
+
 prime: prime.c
 	${CC} ${CFLAGS} -lm -o $@ $^
 
