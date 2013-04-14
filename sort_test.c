@@ -1,9 +1,12 @@
+#include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <sys/time.h>
+#include <string.h>
 
-#define unless(X) if (!(X))
+#define UNLESS(X) if (!(X))
+#define STREQ(X, Y) (!strcmp(X, Y))
+
 typedef struct list_t {
 	int *array;
 	int count;
@@ -89,7 +92,7 @@ bubble_sort(List *list)
 				swapped = 1;
 			}
 		}
-		unless (swapped)
+		UNLESS (swapped)
 			break;
 	}
 }
@@ -117,17 +120,35 @@ insert_sort(List *list)
 int
 main(int argc, char **argv)
 {
+	int iter;
 	List *testlist;
+	Sortfuncs func;
 	Sortfuncs funcs[] = {
 		{"bubble", bubble_sort},
 		{"insert", insert_sort},
 		{NULL, NULL}
 	};
 
+	if (argc > 1)
+	{
+		for (iter = 0; funcs[iter].name != NULL; iter++)
+		{
+			if (STREQ(argv[1], funcs[iter].name))
+			{
+				func = funcs[iter];
+				break;
+			}
+		}
+	}
+	else
+		func = funcs[0];
+
+
 	testlist = random_int_list(10);
 	print_int_list(testlist);
-	bubble_sort(testlist);
-	unless (issorted(testlist))
+	printf("... Performing %s sort on the values.\n", func.name);
+	func.sortfun(testlist);
+	UNLESS (issorted(testlist))
 		puts("FAILED");
 	print_int_list(testlist);
 	return(EXIT_SUCCESS);
