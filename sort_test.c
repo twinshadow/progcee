@@ -4,8 +4,13 @@
 #include <limits.h>
 #include <string.h>
 
+#define LENGTH(X) (sizeof(X) / sizeof(X[0]))
 #define UNLESS(X) if (!(X))
 #define STREQ(X, Y) (!strcmp(X, Y))
+#define SWAP(X, Y, Z)  \
+		Z = X; \
+		X = Y; \
+		Y = Z;
 
 typedef struct list_t {
 	int *array;
@@ -78,7 +83,8 @@ issorted(List *list)
 void
 bubble_sort(List *list)
 {
-	int iter, sub, swap, swapped;
+	int iter, sub;
+	int swap, swapped;
 	for (iter = 0; iter < list->count; iter++)
 	{
 		swapped = 0;
@@ -86,9 +92,9 @@ bubble_sort(List *list)
 		{
 			if (list->array[sub] < list->array[sub - 1])
 			{
-				swap = list->array[sub];
-				list->array[sub] = list->array[sub - 1];
-				list->array[sub - 1] = swap;
+				SWAP(list->array[sub],
+				     list->array[sub - 1],
+				     swap);
 				swapped = 1;
 			}
 		}
@@ -103,13 +109,31 @@ insert_sort(List *list)
 	int iter, sub;
 	int swap;
 	for (iter = 1; iter < list->count; iter++)
-	{
 		for (sub = iter; sub > 0 && list->array[sub] < list->array[sub - 1]; sub--)
 		{
-			swap = list->array[sub];
-			list->array[sub] = list->array[sub - 1];
-			list->array[sub - 1] = swap;
+			SWAP(list->array[sub],
+			     list->array[sub - 1],
+			     swap);
 		}
+}
+
+void
+shell_sort(List *list)
+{
+	int iter, subiter, gapiter;
+	int swap;
+	static int gaplist[] = {701, 301, 132, 57, 23, 10, 4, 1};
+	int gapnum;
+
+	for (gapiter = 0; gapiter < 8; gapiter++)
+	{
+		gapnum = gaplist[gapiter];
+		for (iter = gapnum; iter < list->count; iter++)
+			for (subiter = iter; subiter >= gapnum; subiter -= gapnum)
+				if (list->array[subiter] < list->array[subiter - gapnum])
+				{
+					SWAP(list->array[subiter], list->array[subiter - gapnum], swap);
+				}
 	}
 }
 
@@ -126,6 +150,7 @@ main(int argc, char **argv)
 	Sortfuncs funcs[] = {
 		{"bubble", bubble_sort},
 		{"insert", insert_sort},
+		{"shell", shell_sort},
 		{NULL, NULL}
 	};
 
@@ -144,12 +169,12 @@ main(int argc, char **argv)
 		func = funcs[0];
 
 
-	testlist = random_int_list(10);
-	print_int_list(testlist);
+	testlist = random_int_list(9);
 	printf("... Performing %s sort on the values.\n", func.name);
+	print_int_list(testlist);
 	func.sortfun(testlist);
+	print_int_list(testlist);
 	UNLESS (issorted(testlist))
 		puts("FAILED");
-	print_int_list(testlist);
 	return(EXIT_SUCCESS);
 }
