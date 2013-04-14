@@ -12,7 +12,7 @@
 /*
  * Return the addrinfo from the selected options
  */
-extern struct addrinfo*
+struct addrinfo*
 get_addr(char *address,
 	char *port,
 	int family,
@@ -31,18 +31,18 @@ get_addr(char *address,
 	hint.ai_protocol = proto;
 
 	echeck = getaddrinfo(address, port, &hint, &adr);
-	if(echeck != 0){
+	if (echeck != 0){
 		perror("libsock: getaddrinfo");
 		fputs(gai_strerror(echeck), stderr);
-		return(NULL);
+		return (NULL);
 	}
-	return(adr);
+	return (adr);
 }
 
 /*
  * get sockaddr, IPv4 or IPv6:
  */
-extern void*
+void*
 get_inaddr(struct sockaddr *sa)
 {
 	if (sa->sa_family == AF_INET)
@@ -53,7 +53,7 @@ get_inaddr(struct sockaddr *sa)
 /*
  * return socket connection from addrinfo
  */
-extern int
+int
 soconnect(struct addrinfo *ad)
 {
 	int sock_fd = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
@@ -78,7 +78,7 @@ soconnect(struct addrinfo *ad)
 /*
  * return socket binding from addrinfo
  */
-extern int
+int
 sobind(struct addrinfo *ad)
 {
 	int sock_fd = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
