@@ -111,12 +111,12 @@ shell_sort(int count, int *list)
 	for (gapiter = 0; gapiter < 8; gapiter++)
 	{
 		gapnum = gaplist[gapiter];
-		for (iter = gapnum; iter < list->count; iter++)
+		for (iter = gapnum; iter < count; iter++)
 			for (subiter = iter; subiter >= gapnum; subiter -= gapnum)
-				if (list->array[subiter] < list->array[subiter - gapnum])
-				{
-					SWAP(list->array[subiter], list->array[subiter - gapnum], swap);
-				}
+				if (list[subiter] < list[subiter - gapnum])
+					SWAP(list[subiter],
+					     list[subiter - gapnum],
+					     swap);
 	}
 }
 
