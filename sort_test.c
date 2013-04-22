@@ -7,71 +7,56 @@
 #define LENGTH(X) (sizeof(X) / sizeof(X[0]))
 #define UNLESS(X) if (!(X))
 #define STREQ(X, Y) (!strcmp(X, Y))
-#define SWAP(X, Y, Z)  \
-		Z = X; \
-		X = Y; \
-		Y = Z;
-
-typedef struct list_t {
-	int *array;
-	int count;
-} List;
+#define SWAP(X, Y, Z) { Z = X; \
+			X = Y; \
+			Y = Z; }
 
 typedef struct sortfuncs_t {
 	char *name;
 	void (*sortfun)();
 } Sortfuncs;
 
-List*
+int*
 random_int_list(int count)
 {
-	List *buf;
+	int *buf;
 	int iter;
 	struct timeval time;
 
 	if (count < 1)
 		return NULL;
 
-	buf = calloc(1, sizeof(struct list_t));
+	buf = calloc(count, sizeof(int));
 	if (buf == NULL)
 		return NULL;
-
-	buf->array = calloc(count, sizeof(int));
-	if (buf->array == NULL)
-	{
-		free(buf);
-		return NULL;
-	}
 
 	gettimeofday(&time, NULL);
 	srand((unsigned long)time.tv_usec);
 	for (iter = 0; iter < count; iter++)
 	{
-		buf->array[iter] = rand() % 20;
+		buf[iter] = rand() % 20;
 	}
-
-	buf->count = count;
 
 	return buf;
 }
 
 void
-print_int_list(List *list)
+print_int_list(int count, int *list)
 {
 	int iter;
-	for (iter = 0; iter < list->count; iter++)
+	for (iter = 0; iter < count; iter++)
 	{
-		printf("%02d ", list->array[iter]);
+		printf("%02d ", list[iter]);
 	}
 	puts("");
 }
 
 int
-issorted(List *list)
+issorted(int count, int *list)
 {
 	int iter;
-	for (iter = 1; iter < list->count; iter++)
-		if (list->array[iter] < list->array[iter - 1])
+	for (iter = 1; iter < count; iter++)
+		if (list[iter] < list[iter - 1])
 			return 0;
 	return 1;
 }
@@ -81,19 +66,19 @@ issorted(List *list)
 */
 
 void
-bubble_sort(List *list)
+bubble_sort(int count, int *list)
 {
 	int iter, sub;
 	int swap, swapped;
-	for (iter = 0; iter < list->count; iter++)
+	for (iter = 0; iter < count; iter++)
 	{
 		swapped = 0;
-		for (sub = list->count - 1; sub > iter; sub--)
+		for (sub = count - 1; sub > iter; sub--)
 		{
-			if (list->array[sub] < list->array[sub - 1])
+			if (list[sub] < list[sub - 1])
 			{
-				SWAP(list->array[sub],
-				     list->array[sub - 1],
+				SWAP(list[sub],
+				     list[sub - 1],
 				     swap);
 				swapped = 1;
 			}
@@ -104,21 +89,19 @@ bubble_sort(List *list)
 }
 
 void
-insert_sort(List *list)
+insert_sort(int count, int *list)
 {
 	int iter, sub;
 	int swap;
-	for (iter = 1; iter < list->count; iter++)
-		for (sub = iter; sub > 0 && list->array[sub] < list->array[sub - 1]; sub--)
-		{
-			SWAP(list->array[sub],
-			     list->array[sub - 1],
+	for (iter = 1; iter < count; iter++)
+		for (sub = iter; sub > 0 && list[sub] < list[sub - 1]; sub--)
+			SWAP(list[sub],
+			     list[sub - 1],
 			     swap);
-		}
 }
 
 void
-shell_sort(List *list)
+shell_sort(int count, int *list)
 {
 	int iter, subiter, gapiter;
 	int swap;
@@ -145,7 +128,7 @@ int
 main(int argc, char **argv)
 {
 	int iter;
-	List *testlist;
+	int *testlist;
 	Sortfuncs func;
 	Sortfuncs funcs[] = {
 		{"bubble", bubble_sort},
@@ -169,12 +152,13 @@ main(int argc, char **argv)
 		func = funcs[0];
 
 
-	testlist = random_int_list(9);
+	int testlen = 10;
+	testlist = random_int_list(testlen);
 	printf("... Performing %s sort on the values.\n", func.name);
-	print_int_list(testlist);
-	func.sortfun(testlist);
-	print_int_list(testlist);
-	UNLESS (issorted(testlist))
+	print_int_list(testlen, testlist);
+	func.sortfun(testlen, testlist);
+	print_int_list(testlen, testlist);
+	UNLESS (issorted(testlen, testlist))
 		puts("FAILED");
 	return(EXIT_SUCCESS);
 }
