@@ -1,0 +1,12 @@
+
+DEBUG ?= NO
+
+ifeq (${DEBUG}, NO)
+DEBUG=		-g
+OPTIMIZATION=	-O0
+else
+DEBUG=
+OPTIMIZATION=	-Os
+endif
+
+CFLAGS= ${OPTIMIZATION} ${DEBUG}
