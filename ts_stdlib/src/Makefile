@@ -1,2 +1,7 @@
-include	../Makefile
-CFLAGS+=	-I../includes
+SRCS=$(wildcard *.c)
+OBJS=$(SRCS:.c=.o)
+
+all: ${OBJS}
+
+clean:
+	rm -f ${OBJS}
