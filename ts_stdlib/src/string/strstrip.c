@@ -2,19 +2,16 @@
 #include <string.h>
 
 void
-strstrip(char *str, const int count)
+strstrip(char *str, int count)
 {
-	int iter, rter;
+	char *cptr;
 
-	if (count < 1)
+	if (str == NULL || count < 1)
 		return;
 
-	for (iter = 0; iter < count && isspace(str[iter]); iter++);
-	for (rter = count - 1; rter > iter && isspace(str[rter]); rter--);
+	for (cptr = str; cptr != &str[count - 1] && isspace(*cptr); cptr++);
+	for (count -= 1; &str[count] != cptr && isspace(str[count]); count--);
 
-	if (iter)
-		memmove(str, &str[iter], rter);
-
-	if (rter < count)
-		str[(rter - iter) + 1] = '\0';
+	memmove(str, cptr, count);
+	str[count] = '\0';
 }
