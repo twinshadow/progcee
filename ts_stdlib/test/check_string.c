@@ -6,7 +6,7 @@ START_TEST(test_strstrip_pos1)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
-	strshift(3, buf, strlen(buf), sizeof(char));
+	strshift(3, buf, strlen(buf));
 	ck_assert_str_eq(buf, "7890123456");
 }
 END_TEST
@@ -15,7 +15,7 @@ START_TEST(test_strstrip_pos2)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
-	strshift(8, buf, strlen(buf), sizeof(char));
+	strshift(8, buf, strlen(buf));
 	ck_assert_str_eq(buf, "2345678901");
 }
 END_TEST
@@ -24,7 +24,7 @@ START_TEST(test_strstrip_empty)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "");
-	strshift(3, buf, 11, sizeof(char));
+	strshift(3, buf, 11);
 	ck_assert_str_eq(buf, "");
 }
 END_TEST
@@ -33,7 +33,7 @@ START_TEST(test_strstrip_neg1)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
-	strshift(-3, buf, strlen(buf), sizeof(char));
+	strshift(-3, buf, strlen(buf));
 	ck_assert_str_eq(buf, "3456789012");
 }
 END_TEST
@@ -42,7 +42,7 @@ START_TEST(test_strstrip_neg2)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
-	strshift(-8, buf, strlen(buf), sizeof(char));
+	strshift(-8, buf, strlen(buf));
 	ck_assert_str_eq(buf, "8901234567");
 }
 END_TEST
@@ -53,7 +53,7 @@ START_TEST(test_strshift_int)
      int buf[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
      int shifted_buf[] = {7, 8, 9, 0, 1, 2, 3, 4, 5, 6};
 
-     strshift(offset, &buf, 10, sizeof(int));
+     memshift(offset, &buf, 10, sizeof(int));
 
      for(int i = 0; i < 10; i++)
 	  ck_assert_int_eq(buf[i], shifted_buf[i]);

@@ -3,7 +3,7 @@
 #include "twinshadow/macros.h"
 
 void
-strshift(int offset, void *str, const int count, size_t size)
+memshift(int offset, void *str, const int count, size_t size)
 {
 	void *buf;
 	size_t buflen;
@@ -22,36 +22,27 @@ strshift(int offset, void *str, const int count, size_t size)
 
 	//buflen = SMALLEST_DIFFERENCE(count, offset);
 	buflen = (count - offset) * size;
-	
-	if(is_string(str, count))
-	{
-		buf = malloc(buflen + 1);
-		((char*)buf)[buflen + 1] = '\0';
-	}
-	else
-		buf = malloc(buflen);
-	
+	buf = malloc(buflen);
+ 	
 	if (buf == NULL)
 		exit(EXIT_FAILURE);
 	
 	if (count - offset < buflen)
 	{
 		memcpy(buf, str, buflen);
-		memmove(str, (char*)str + buflen, offset*size);
-		memcpy((char*)str + (offset*size) , buf, buflen);
+		memmove(str, str + buflen, offset*size);
+		memcpy((char*)str + (offset*size), buf, buflen);
 	}
 	else
 	{
-		memcpy(buf, (char*)str+buflen, offset*size);
-		memmove((char*)str+(offset*size), str, buflen);
+		memcpy(buf, str+buflen, offset*size);
+		memmove(str+(offset*size), str, buflen);
 		memcpy(str, buf, offset);
 	}
 }
 
-int
-is_string(void *a, size_t l)
+void
+strshift(int offset, char *str, const int count)
 {
-  char *last = (char*)a + sizeof(char) * l;
-
-  return (*last == '\0');
+	memshift(offset, str, count, sizeof(char));
 }
