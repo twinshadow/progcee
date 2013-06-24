@@ -1,3 +1,5 @@
+OBJ_NAME=	$(shell basename "${PWD}")
+
 SRCS=		$(wildcard [!(check_)]*.c)
 CHECK_SRCS=	$(wildcard check_*.c)
 OBJS=		$(SRCS:.c=.o)
@@ -9,12 +11,13 @@ endif
 
 ifndef (${TOP})
 CFLAGS+=	-I../../includes
+PREFIX=		../../obj
 endif
 
-%.a: %.o
+${OBJ_NAME}.a : ${OBJS}
 	ar -cvq $@ $^
 
-%.so: %.o
+${OBJ_NAME}.so: ${OBJS}
 	${CC} ${CFLAGS} ${LDFLAGS} -shared -o $@ $^
 
 %.co : %.c
@@ -31,7 +34,11 @@ check-run: check-build
 
 check: check-run
 
+install: ${OBJ_NAME}.a
+	mkdir -p ${PREFIX}/lib
+	install ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
+
 clean:
 	rm -f ${OBJS} ${CHECK_OBJS}
 
-.PHONY: clean check
+.PHONY: clean check install

@@ -21,5 +21,7 @@ ${SUBDIRS:=-install}:
 all: ${SUBDIRS}
 check: $(SUBDIRS:=-check)
 clean: $(SUBDIRS:=-clean)
+	rm -rf obj
+install: $(SUBDIRS:=-install)
 
 .PHONY: clean
