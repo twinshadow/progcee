@@ -5,11 +5,11 @@ CHECK_SRCS=	$(wildcard check_*.c)
 OBJS=		$(SRCS:.c=.o)
 CHECK_OBJS=	$(CHECK_SRCS:.c=.co)
 
-ifdef (${DEBUG})
+ifdef DEBUG
 CFLAGS+=	-g -O0
 endif
 
-ifndef (${TOP})
+ifndef TOP
 CFLAGS+=	-I../../includes
 PREFIX=		../../obj
 endif

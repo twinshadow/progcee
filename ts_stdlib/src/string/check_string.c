@@ -47,6 +47,20 @@ START_TEST(test_strstrip_neg2)
 }
 END_TEST
 
+START_TEST(test_strshift_int)
+{
+	int i;
+	int offset = 3;
+	int buf[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int shifted_buf[] = {7, 8, 9, 0, 1, 2, 3, 4, 5, 6};
+
+	memshift(offset, &buf, 10, sizeof(int));
+
+	for(i = 0; i < 10; i++)
+		ck_assert_int_eq(buf[i], shifted_buf[i]);
+}
+END_TEST
+
 Suite *
 string_suite(void)
 {
@@ -58,6 +72,7 @@ string_suite(void)
 	tcase_add_test(tc_core, test_strstrip_neg1);
 	tcase_add_test(tc_core, test_strstrip_neg2);
 	tcase_add_test(tc_core, test_strstrip_empty);
+	tcase_add_test(tc_core, test_strshift_int);
 
 	suite_add_tcase(s, tc_core);
 

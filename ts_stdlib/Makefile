@@ -16,7 +16,7 @@ ${SUBDIRS:=-clean}:
 
 ${SUBDIRS:=-install}:
 	mkdir -p "${TOP}/obj"
-	cd src/$(shell echo $@ | cut -d'-' -f1) && ${MAKE} CFLAGS="${CFLAGS}" PREFIX="${TOP}/obj" install
+	cd src/$(shell echo $@ | cut -d'-' -f1) && ${MAKE} CFLAGS="${CFLAGS}" TOP="${TOP}" PREFIX="${TOP}/obj" install
 
 all: ${SUBDIRS}
 check: $(SUBDIRS:=-check)
