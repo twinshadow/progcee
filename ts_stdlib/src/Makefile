@@ -39,6 +39,6 @@ install: ${OBJ_NAME}.a
 	install ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
 
 clean:
-	rm -f ${OBJS} ${CHECK_OBJS}
+	rm -f ${OBJS} ${CHECK_OBJS} ${OBJ_NAME}.a ${OBJ_NAME}.so
 
 .PHONY: clean check install
