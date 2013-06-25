@@ -3,10 +3,10 @@
 #include "twinshadow/macros.h"
 
 void
-strshift(int offset, char *str, const int count)
+memshift(int32_t offset, void *ptr, const size_t count, size_t size)
 {
-	char *buf;
-	int buflen;
+	void *buf;
+	size_t buflen;
 
 	if (count < 1)
 		return;
@@ -21,22 +21,28 @@ strshift(int offset, char *str, const int count)
 		return;
 
 	//buflen = SMALLEST_DIFFERENCE(count, offset);
-	buflen = count - offset;
-	buf = malloc((sizeof(char) * buflen) + 1);
+	buflen = (count - offset) * size;
+	buf = malloc(buflen);
+
 	if (buf == NULL)
 		exit(EXIT_FAILURE);
-	buf[buflen + 1] = '\0';
 
 	if (count - offset < buflen)
 	{
-		memcpy(buf, str, buflen);
-		memmove(str, &str[buflen], offset);
-		memcpy(&str[offset], buf, buflen);
+		memcpy(buf, ptr, buflen);
+		memmove(ptr, (ptr + buflen), (offset * size));
+		memcpy((ptr + (offset * size)), buf, buflen);
 	}
 	else
 	{
-		memcpy(buf, &str[buflen], offset);
-		memmove(&str[offset], str, buflen);
-		memcpy(str, buf, offset);
+		memcpy(buf, (ptr + buflen), (offset * size));
+		memmove((ptr + (offset * size)), ptr, buflen);
+		memcpy(ptr, buf, offset);
 	}
+}
+
+void
+strshift(const int32_t offset, char *str, const size_t count)
+{
+	memshift(offset, str, count, sizeof(char));
 }

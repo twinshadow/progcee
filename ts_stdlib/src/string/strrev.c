@@ -1,8 +1,9 @@
 #include <string.h>
+#include <errno.h>
 #include "twinshadow/macros.h"
 
 void
-revstr(char *str, const int count)
+ts_strnrev(char *str, const size_t count)
 {
 	int i, half;
 	char cptr;
@@ -10,8 +11,17 @@ revstr(char *str, const int count)
 	if (count < 1)
 		return;
 
-	half =  (count - 1) / 2;
+	half =  (count) / 2;
 
 	for (i = 0; i <= half; i++)
-		SWAP(str[i], str[count - i - 1], cptr);
+		SWAP(str[i], str[count - i], cptr);
+}
+
+void
+ts_strrev(char *str)
+{
+	if (str[0] == '\0')
+		return;
+
+	ts_strnrev(str, strlen(str) - 1);
 }

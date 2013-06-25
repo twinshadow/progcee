@@ -21,8 +21,8 @@
 				  SWAP(W, Y, Z); }
 #define DEBUG(X) if(_DEBUG) printf
 
-#define REPEAT(X, Y, Z) \
-	for (Z = 0; Z < Y; Z++) \
-		X;
+#define REPEAT(__iter, __comp, __func) \
+	for (__iter = 0; __iter < __comp; __iter++) \
+	{__func;}
 
 #endif /* TWINSHADOW_MACROS_H */

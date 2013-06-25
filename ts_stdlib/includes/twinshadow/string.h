@@ -4,6 +4,11 @@
 char *strrtok_r(char *str, const char delim, char *lastptr);
 char *strrtok(char *str, const char delim);
 void strstrip(char *str, const int count);
-void strshift(int offset, char *str, const int count);
+void memshift(int32_t offset, void *ptr, const size_t count, size_t size);
+void strshift(int32_t offset, char *str, const size_t count);
+char *ts_strndup(const char *src, size_t len);
+char *ts_strdup(const char *src);
+void ts_strnrev(char *str, const size_t count);
+void ts_strrev(char *str);
 
 #endif /* TWINSHADOW_STRING_H */
