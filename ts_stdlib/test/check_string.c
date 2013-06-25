@@ -1,8 +1,10 @@
 #include <stdlib.h>
-#include <check.h>
 #include "twinshadow/string.h"
 
-START_TEST(test_strstrip_pos1)
+#include <check.h>
+#include "twinshadow/check.h"
+
+START_TEST(test_strshift_pos1)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
@@ -11,7 +13,7 @@ START_TEST(test_strstrip_pos1)
 }
 END_TEST
 
-START_TEST(test_strstrip_pos2)
+START_TEST(test_strshift_pos2)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
@@ -20,7 +22,7 @@ START_TEST(test_strstrip_pos2)
 }
 END_TEST
 
-START_TEST(test_strstrip_empty)
+START_TEST(test_strshift_empty)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "");
@@ -29,7 +31,7 @@ START_TEST(test_strstrip_empty)
 }
 END_TEST
 
-START_TEST(test_strstrip_neg1)
+START_TEST(test_strshift_neg1)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
@@ -38,7 +40,7 @@ START_TEST(test_strstrip_neg1)
 }
 END_TEST
 
-START_TEST(test_strstrip_neg2)
+START_TEST(test_strshift_neg2)
 {
 	char *buf = calloc(12, sizeof(char));
 	strcpy(buf, "0123456789");
@@ -47,19 +49,33 @@ START_TEST(test_strstrip_neg2)
 }
 END_TEST
 
+START_TEST(test_strstrip_1)
+{
+	char test[] = "12345",
+	     xpct[] = "12345";
+	new_ck_str(buf, test);
+
+	strstrip(buf, strlen(test));
+	ck_assert_str_eq(buf, test);
+}
+END_TEST
+
 Suite *
 string_suite(void)
 {
 	Suite *s = suite_create("String");
 
-	TCase *tc_core = tcase_create("Core");
-	tcase_add_test(tc_core, test_strstrip_pos1);
-	tcase_add_test(tc_core, test_strstrip_pos2);
-	tcase_add_test(tc_core, test_strstrip_neg1);
-	tcase_add_test(tc_core, test_strstrip_neg2);
-	tcase_add_test(tc_core, test_strstrip_empty);
+	TCase *tc_strshift = tcase_create("strshift");
+	tcase_add_test(tc_strshift, test_strshift_pos1);
+	tcase_add_test(tc_strshift, test_strshift_pos2);
+	tcase_add_test(tc_strshift, test_strshift_neg1);
+	tcase_add_test(tc_strshift, test_strshift_neg2);
+	tcase_add_test(tc_strshift, test_strshift_empty);
+	suite_add_tcase(s, tc_strshift);
 
-	suite_add_tcase(s, tc_core);
+	TCase *tc_strstrip = tcase_create("strstrip");
+	tcase_add_test(tc_strstrip, test_strstrip_1);
+	suite_add_tcase(s, tc_strstrip);
 
 	return s;
 }
