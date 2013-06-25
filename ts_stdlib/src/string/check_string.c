@@ -47,7 +47,7 @@ START_TEST(test_strstrip_neg2)
 }
 END_TEST
 
-START_TEST(test_strshift_int)
+START_TEST(test_memshift_int)
 {
 	int i;
 	int offset = 3;
@@ -72,7 +72,7 @@ string_suite(void)
 	tcase_add_test(tc_core, test_strstrip_neg1);
 	tcase_add_test(tc_core, test_strstrip_neg2);
 	tcase_add_test(tc_core, test_strstrip_empty);
-	tcase_add_test(tc_core, test_strshift_int);
+	tcase_add_test(tc_core, test_memshift_int);
 
 	suite_add_tcase(s, tc_core);
 

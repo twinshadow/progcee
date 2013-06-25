@@ -3,11 +3,10 @@
 #include "twinshadow/macros.h"
 
 void
-memshift(const int32_t __offset, void *ptr, const size_t count, size_t size)
+memshift(int32_t offset, void *ptr, const size_t count, size_t size)
 {
 	void *buf;
 	size_t buflen;
-	int32_t offset = __offset;
 
 	if (count < 1)
 		return;
@@ -43,7 +42,7 @@ memshift(const int32_t __offset, void *ptr, const size_t count, size_t size)
 }
 
 void
-strshift(const int64_t offset, char *str, const size_t count)
+strshift(const int32_t offset, char *str, const size_t count)
 {
 	memshift(offset, str, count, sizeof(char));
 }
