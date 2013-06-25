@@ -13,6 +13,16 @@
 #define SWAP(X, Y, Z) { Z = X; \
 			X = Y; \
 			Y = Z; }
+#define ROTATE_RIGHT(W, X, Y, Z) { SWAP(W, X, Z); \
+				   SWAP(X, Y, Z); \
+				   SWAP(Y, W, Z); }
+#define ROTATE_LEFT(W, X, Y, Z) { SWAP(Y, X, Z); \
+				  SWAP(X, W, Z); \
+				  SWAP(W, Y, Z); }
 #define DEBUG(X) if(_DEBUG) printf
+
+#define REPEAT(X, Y, Z) \
+	for (Z = 0; Z < Y; Z++) \
+		X;
 
 #endif /* TWINSHADOW_MACROS_H */
