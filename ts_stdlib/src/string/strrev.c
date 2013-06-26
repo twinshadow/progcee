@@ -1,23 +1,23 @@
-#include <string.h>
 #include <errno.h>
-#include "twinshadow/macros.h"
+#include "twinshadow/string.h"
+#include "twinshadow/twinshadow.h"
 
 void
-ts_strnrev(char *str, const size_t count)
+ts_strnrev(char *str, const size_t len)
 {
 	int i, half;
 	char cptr;
 
-	if (count < 1)
+	if (len < 1)
 		return;
 
-	half =  (count) / 2;
+	half =  (len) / 2;
 
 	for (i = 0; i <= half; i++)
 	{
-		if (str[i] == str[count - i])
+		if (str[i] == str[len - i])
 			continue;
-		SWAP(str[i], str[count - i], cptr);
+		SWAP(str[i], str[len - i], cptr);
 	}
 }
 
@@ -27,5 +27,5 @@ ts_strrev(char *str)
 	if (str[0] == '\0')
 		return;
 
-	ts_strnrev(str, strlen(str) - 1);
+	ts_strnrev(str, strnlen(str, SIZE_MAX - 1) - 1);
 }

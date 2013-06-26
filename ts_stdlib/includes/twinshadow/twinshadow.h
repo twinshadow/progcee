@@ -1,6 +1,8 @@
 #ifndef TWINSHADOW_MACROS_H
 #define TWINSHADOW_MACROS_H
 
+#include <stdlib.h>
+
 #define MATCH_SIGNEDNESS(X, Y) ((X > 0) ? ((Y > 0) ? Y : -Y) : ((Y < 0) ? Y : -Y))
 #define POSITIVE(X) ((X > 0) ? X : -X)
 #define NEGATIVE(X) ((X < 0) ? X : -X)
@@ -24,5 +26,12 @@
 #define REPEAT(__iter, __comp, __func) \
 	for (__iter = 0; __iter < __comp; __iter++) \
 	{__func;}
+
+static void
+ts_free(void *ptr)
+{
+	free(ptr);
+	ptr = NULL;
+}
 
 #endif /* TWINSHADOW_MACROS_H */

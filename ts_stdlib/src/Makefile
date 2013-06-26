@@ -6,11 +6,11 @@ OBJS=		$(SRCS:.c=.o)
 CHECK_OBJS=	$(CHECK_SRCS:.c=.co)
 
 ifdef DEBUG
-CFLAGS+=	-g -O0
+CFLAGS+=	-O0
 endif
 
 ifndef TOP
-CFLAGS+=	-I../../includes
+CFLAGS+=	-I../../includes -g
 PREFIX=		../../obj
 endif
 
@@ -29,7 +29,7 @@ check-build: ${OBJS} ${CHECK_OBJS}
 
 check-run: check-build
 	@for CHK in ${CHECK_OBJS}; do	\
-		$$CHK;			\
+		valgrind -q $$CHK;		\
 	done
 
 check: check-run

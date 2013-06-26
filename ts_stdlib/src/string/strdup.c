@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <string.h>
+#include "twinshadow/string.h"
 
 char *
 ts_strndup(const char *src, size_t len)
@@ -19,5 +19,5 @@ ts_strndup(const char *src, size_t len)
 char *
 ts_strdup(const char *src)
 {
-	return (ts_strndup(src, strlen(src) + 1));
+	return (ts_strndup(src, strnlen(src, SIZE_MAX - 1) + 1));
 }
