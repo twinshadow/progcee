@@ -14,7 +14,11 @@ ts_strnrev(char *str, const size_t count)
 	half =  (count) / 2;
 
 	for (i = 0; i <= half; i++)
+	{
+		if (str[i] == str[count - i])
+			continue;
 		SWAP(str[i], str[count - i], cptr);
+	}
 }
 
 void
