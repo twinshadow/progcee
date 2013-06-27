@@ -1,14 +1,22 @@
 #include "twinshadow/check.h"
 #include "twinshadow/string.h"
 
-START_TEST(test_strrev)
+START_TEST(test_strrtok)
 {
-	char test[] = "12345",
-	     xpct[] = "54321";
-	char *buf = ts_strdup(test);
+	char buf[] = "one two three four five";
+	char *xpct[] = {
+		"five",
+		"four",
+		"three",
+		"two",
+		"one"
+	};
+	char *test = strdup(buf);
 
-	ts_strrev(buf);
-	ck_assert_str_eq(buf, xpct);
+	int i;
+	char *ptr = NULL;
+	for (i = 0; (ptr = ts_strrtok(test, ' ')); i++)
+		ck_assert_str_eq(ptr, xpct[i]);
 }
 END_TEST
 
@@ -17,9 +25,9 @@ main(void)
 {
 	int number_failed;
 
-	Suite *s = suite_create("check_strrev");
+	Suite *s = suite_create("check_strrtok");
 	TCase *tc = tcase_create("Main");
-	tcase_add_test(tc, test_strrev);
+	tcase_add_test(tc, test_strrtok);
 	suite_add_tcase(s, tc);
 
 	SRunner *sr = srunner_create(s);

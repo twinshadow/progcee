@@ -1,14 +1,14 @@
 #include "twinshadow/check.h"
 #include "twinshadow/string.h"
 
-START_TEST(test_strrev)
+START_TEST(test_strstrip)
 {
-	char test[] = "12345",
-	     xpct[] = "54321";
-	char *buf = ts_strdup(test);
+	char buf[] = "   one two three   ";
+	char xpct[] = "one two three";
+	char *test = strdup(buf);
 
-	ts_strrev(buf);
-	ck_assert_str_eq(buf, xpct);
+	ts_strstrip(test);
+	ck_assert_str_eq(test, xpct);
 }
 END_TEST
 
@@ -17,9 +17,9 @@ main(void)
 {
 	int number_failed;
 
-	Suite *s = suite_create("check_strrev");
+	Suite *s = suite_create("check_strstrip");
 	TCase *tc = tcase_create("Main");
-	tcase_add_test(tc, test_strrev);
+	tcase_add_test(tc, test_strstrip);
 	suite_add_tcase(s, tc);
 
 	SRunner *sr = srunner_create(s);

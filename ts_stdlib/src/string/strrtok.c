@@ -1,29 +1,29 @@
 #include "twinshadow/string.h"
+#include <stdio.h>
 
 char*
-ts_strrtok_r(char *str, const char delim, char *lastptr)
+ts_strrtok_r(char *str, const char delim, char **saveptr)
 {
 	char *cptr;
-	if ((cptr = strrchr(str, delim)) != NULL)
-	{
-		*cptr = '\0';
-		lastptr = ++cptr;
-	}
-	else if (lastptr == str)
-	{
-		lastptr = NULL;
-	}
+	cptr = strrchr(str, delim);
+
+	if (cptr)
+		*saveptr = cptr;
 	else
 	{
-		lastptr = str;
+		if (*saveptr == NULL)
+			return NULL;
+		*saveptr = NULL;
+		return str;
 	}
 
-	return lastptr;
+	*cptr++ = '\0';
+	return cptr;
 }
 
 char*
 ts_strrtok(char *str, const char delim)
 {
-	static char *lastptr;
-	return ts_strrtok_r(str, delim, lastptr);
+	static char *lastptr = NULL;
+	return ts_strrtok_r(str, delim, &lastptr);
 }

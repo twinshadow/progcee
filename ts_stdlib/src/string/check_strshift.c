@@ -1,7 +1,4 @@
-#include <stdlib.h>
 #include "twinshadow/string.h"
-
-#include <check.h>
 #include "twinshadow/check.h"
 
 START_TEST(test_strshift_pos1)

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 
-char *ts_strrtok_r(char *str, const char delim, char *lastptr);
+char *ts_strrtok_r(char *str, const char delim, char **saveptr);
 char *ts_strrtok(char *str, const char delim);
 void ts_strnstrip(char *str, size_t len);
 void ts_strstrip(char *str);

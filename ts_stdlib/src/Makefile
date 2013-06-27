@@ -29,7 +29,7 @@ check-build: ${OBJS} ${CHECK_OBJS}
 
 check-run: check-build
 	@for CHK in ${CHECK_OBJS}; do	\
-		valgrind -q $$CHK;		\
+		valgrind -q $$CHK;	\
 	done
 
 check: check-run
@@ -39,6 +39,6 @@ install: ${OBJ_NAME}.a
 	install ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
 
 clean:
-	rm -f ${OBJS} ${CHECK_OBJS} ${OBJ_NAME}.a ${OBJ_NAME}.so
+	rm -f *.o *.co ${OBJ_NAME}.a ${OBJ_NAME}.so
 
 .PHONY: clean check install
