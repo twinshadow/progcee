@@ -1,5 +1,4 @@
 #include <errno.h>
-#include <stdlib.h>
 #include "twinshadow/string.h"
 #include "twinshadow/twinshadow.h"
 
@@ -12,15 +11,7 @@ ts_memshift(int offset, void *ptr, size_t len)
 	if (len < 2)
 		return;
 
-	/* This takes ridiculous offset amounts and reduces them to the actual
-	 * amount needed to rotate the appropriate amount. Then, it converts
-	 * negative values into their positive equivalents, for simplicity.
-	*/
-	if (offset > len)
-		offset %= MATCH_SIGNEDNESS(offset, len);
-	if (offset < 0)
-		offset = len - -offset;
-
+	REDUCE_OFFSET(offset, len);
 	/* Eliminate conditions that would result in no changes */
 	if (offset == 0 || len == offset)
 		return;
