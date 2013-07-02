@@ -36,6 +36,7 @@ ts_memshift(int offset, void *ptr, size_t len)
 		memmove(ptr + offset, ptr, len - offset);
 		memmove(ptr, buf, offset);
 	}
+	ts_free(buf);
 }
 
 void

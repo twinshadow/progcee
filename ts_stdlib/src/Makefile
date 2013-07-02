@@ -29,11 +29,19 @@ all: ${OBJS}
 check-build: ${OBJS} ${CHECK_OBJS}
 
 check-run: check-build
-	@for CHK in ${CHECK_OBJS}; do	\
-		valgrind --suppressions=${TOP}/ts_valgrind.supp --quiet $$CHK;	\
-	done
+	@set ERROR_CHECK=0;			\
+	for CHK in ${CHECK_OBJS}; do		\
+		valgrind --suppressions=${TOP}/ts_valgrind.supp --quiet $$CHK;\
+		if [ "$$?" -ne 0 ]; then	\
+			set ERROR_CHECK=1;	\
+		fi;				\
+	done;					\
+	exit $$ERROR_CHECK
 
 check: check-run
+
+analyze:
+	clang --analyze ${CFLAGS} ${SRCS}
 
 install: ${OBJ_NAME}.a
 	mkdir -p ${PREFIX}/lib

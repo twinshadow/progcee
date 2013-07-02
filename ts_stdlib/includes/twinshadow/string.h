@@ -14,5 +14,7 @@ char *ts_strndup(const char *src, size_t len);
 char *ts_strdup(const char *src);
 void ts_strnrev(char *str, size_t len);
 void ts_strrev(char *str);
+void ts_strnrot(int offset, char *str, size_t len);
+void ts_strrot(int offset, char *str);
 
 #endif /* TWINSHADOW_STRING_H */
