@@ -10,8 +10,9 @@ CFLAGS+=	-O0
 endif
 
 ifndef TOP
-CFLAGS+=	-I../../includes -g
-PREFIX=		../../obj
+TOP=		../..
+CFLAGS+=	-I${TOP}/includes -g
+PREFIX=		${TOP}/obj
 endif
 
 ${OBJ_NAME}.a : ${OBJS}
@@ -29,7 +30,7 @@ check-build: ${OBJS} ${CHECK_OBJS}
 
 check-run: check-build
 	@for CHK in ${CHECK_OBJS}; do	\
-		valgrind -q $$CHK;	\
+		valgrind --suppressions=${TOP}/ts_valgrind.supp --quiet $$CHK;	\
 	done
 
 check: check-run

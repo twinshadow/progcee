@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
-#include "twinshadow/macros.h"
+#include "twinshadow/twinshadow.h"
 
 typedef struct argopt_t {
 	char **case_values;
