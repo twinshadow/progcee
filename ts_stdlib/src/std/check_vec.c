@@ -41,7 +41,7 @@ TS_VEC_RESIZE(svec, char*);
 START_TEST(test_vec2)
 {
 	struct svec *test;
-	char *idx;
+	char **idx;
 	int i;
 	char *expect[] = {
 		"lorem",
@@ -53,12 +53,12 @@ START_TEST(test_vec2)
 
 	test = svec_new(5);
 	i = 0;
-	TS_VEC2_FOREACH(idx, test) {
-		idx = strdup(expect[i++]);
+	TS_VEC_FOREACH(idx, test) {
+		*idx = strdup(expect[i++]);
 	}
 	i = 4;
-	TS_VEC2_RFOREACH(idx, test) {
-		ck_assert_str_eq(idx, expect[i]);
+	TS_VEC_RFOREACH(idx, test) {
+		ck_assert_str_eq(*idx, expect[i--]);
 	}
 	free(test);
 }

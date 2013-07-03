@@ -20,11 +20,8 @@
 				   SWAP(Y, W, Z); }
 #define ROTATE_LEFT(W, X, Y, Z) ROTATE_RIGHT(X, Y, W, Z);
 
-#define DEBUG(X) if(_DEBUG) printf
-
-#define REPEAT(__iter, __comp, __func) \
-	for (__iter = 0; __iter < __comp; __iter++) \
-	{__func;}
+#define REPEAT(__idx, __comp) \
+	for (__idx = 0; __idx < __comp; __idx++)
 
 /* This takes ridiculous offset amounts and reduces them to the actual amount
  * needed to rotate the appropriate amount. It then converts negative values

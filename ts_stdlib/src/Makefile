@@ -11,7 +11,7 @@ endif
 
 ifndef TOP
 TOP=		../..
-CFLAGS+=	-I${TOP}/includes -g
+CFLAGS+=	-I${TOP}/includes -g -fPIC
 PREFIX=		${TOP}/obj
 endif
 
@@ -21,6 +21,9 @@ ${OBJ_NAME}.a : ${OBJS}
 ${OBJ_NAME}.so: ${OBJS}
 	${CC} ${CFLAGS} ${LDFLAGS} -shared -o $@ $^
 
+%.o : %.c
+	${CC} ${CFLAGS} -c -o $@ $^
+
 %.co : %.c
 	${CC} -lcheck ${CFLAGS} -o $@ $^ ${OBJS}
 
@@ -29,7 +32,7 @@ all: ${OBJS}
 check-build: ${OBJS} ${CHECK_OBJS}
 
 check-run: check-build
-	@set ERROR_CHECK=0;			\
+	set ERROR_CHECK=0;			\
 	for CHK in ${CHECK_OBJS}; do		\
 		valgrind --suppressions=${TOP}/ts_valgrind.supp --quiet $$CHK;\
 		if [ "$$?" -ne 0 ]; then	\
@@ -43,9 +46,10 @@ check: check-run
 analyze:
 	clang --analyze ${CFLAGS} ${SRCS}
 
-install: ${OBJ_NAME}.a
+install: ${OBJ_NAME}.a ${OBJ_NAME}.so
 	mkdir -p ${PREFIX}/lib
 	install ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
+	install ${OBJ_NAME}.so ${PREFIX}/lib/${OBJ_NAME}.so
 
 clean:
 	rm -f *.o *.co ${OBJ_NAME}.a ${OBJ_NAME}.so
