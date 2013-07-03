@@ -27,6 +27,16 @@
 		__var != __head->vec;				\
 		__var--)
 
+/* XXX: not sure... sorta drinky: I'll figure this out later. */
+#define TS_VEC2_FOREACH(__var, __head)				\
+	for (__var = __head->vec[1];				\
+		__var != __head->vec[__head->sentinal];	\
+		__var++)
+#define TS_VEC2_RFOREACH(__var, __head)				\
+	for (__var = __head->vec[__head->sentinal - 1];	\
+		__var != __head->vec[0];			\
+		__var--)
+
 /* Memory functions */
 #define TS_VEC_NEW(__name, __type)				\
 	struct __name *						\
