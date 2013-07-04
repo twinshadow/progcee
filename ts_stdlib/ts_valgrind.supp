@@ -6,5 +6,4 @@
   timer_create(evp)
   fun:timer_create
   fun:srunner_run
-  fun:main
 }

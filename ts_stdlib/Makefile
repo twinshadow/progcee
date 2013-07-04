@@ -1,7 +1,7 @@
 TOP=		$(realpath ${PWD})
 SUBDIRS=	$(shell find src -maxdepth 1 -mindepth 1 -type d -exec basename \{\} \;)
 
-CFLAGS+=	-I${PWD}/includes -g -fPIC
+CFLAGS+=	-I${PWD}/includes -g -fPIC -Wall -Werror
 
 all: ${SUBDIRS}
 

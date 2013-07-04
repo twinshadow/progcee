@@ -34,11 +34,6 @@
 		__offset = __len - -__offset;			\
 }
 
-static void
-ts_free(void *ptr)
-{
-	free(ptr);
-	ptr = NULL;
-}
+#define ts_free(__ptr) {free(__ptr); __ptr=NULL;}
 
 #endif /* TWINSHADOW_MACROS_H */

@@ -11,7 +11,7 @@ endif
 
 ifndef TOP
 TOP=		../..
-CFLAGS+=	-I${TOP}/includes -g -fPIC
+CFLAGS+=	-I${TOP}/includes -g -fPIC -Wall -Werror
 PREFIX=		${TOP}/obj
 endif
 
@@ -25,7 +25,7 @@ ${OBJ_NAME}.so: ${OBJS}
 	${CC} ${CFLAGS} -c -o $@ $^
 
 %.co : %.c
-	${CC} -lcheck ${CFLAGS} -o $@ $^ ${OBJS}
+	${CC} ${CFLAGS} -o $@ $^ ${OBJS} $(shell pkg-config --cflags --libs check)
 
 all: ${OBJS}
 
