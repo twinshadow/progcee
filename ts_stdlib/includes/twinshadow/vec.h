@@ -18,13 +18,13 @@
 
 /* iterators */
 #define TS_VEC_FOREACH(__var, __head)				\
-	for (__var = &__head->vec[1];				\
-		__var != &__head->vec[__head->sentinal];	\
+	for (__var = __head->vec;				\
+		__var <= &__head->vec[__head->sentinal];	\
 		__var++)
 
 #define TS_VEC_RFOREACH(__var, __head)				\
-	for (__var = &__head->vec[__head->sentinal - 1];	\
-		__var != __head->vec;				\
+	for (__var = &__head->vec[__head->sentinal];		\
+		__var >= __head->vec;				\
 		__var--)
 
 /* Memory functions */
@@ -32,15 +32,6 @@
 	struct __name *						\
 	__name##_new(size_t count){				\
 		struct __name *ptr;				\
-		if (count + 2 >= SIZE_MAX			\
-		    || count + 2 < count			\
-		    || (count + 2) * sizeof(__type) > SIZE_MAX	\
-		    || (count + 2) * sizeof(__type)		\
-		        < count * sizeof(__type)) {		\
-			errno = EACCES;				\
-			return NULL;				\
-		}						\
-		count += 2;					\
 		ptr = calloc(1, sizeof(struct __name));		\
 		if (ptr == NULL) {				\
 			errno = ENOMEM;				\
@@ -53,7 +44,7 @@
 			return NULL;				\
 		}						\
 		ptr->sentinal = count - 1;			\
-		ptr->cursor = 1;				\
+		ptr->cursor = 0;				\
 		return ptr;					\
 	}
 
@@ -69,15 +60,6 @@
 	struct __name *							\
 	__name##_resize(struct __name *ptr, size_t count){		\
 		size_t old_sentinal;					\
-		if (count >= SIZE_MAX					\
-		    || count + 2 < count				\
-		    || (count + 2) * sizeof(__type) > SIZE_MAX		\
-		    || (count + 2) * sizeof(__type)			\
-		        < count * sizeof(__type)) {			\
-			errno = EACCES;					\
-			return NULL;					\
-		}							\
-		count += 2;						\
 		if (ptr == NULL) {					\
 			errno = EACCES;					\
 			return NULL;					\
@@ -95,7 +77,7 @@
 			    * sizeof(__type));				\
 		}							\
 		if (ptr->cursor >= ptr->sentinal) {			\
-			ptr->cursor = ptr->sentinal - 1;		\
+			ptr->cursor = ptr->sentinal;			\
 		}							\
 		return ptr;						\
 	}

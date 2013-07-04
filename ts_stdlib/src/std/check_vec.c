@@ -10,11 +10,13 @@ START_TEST(test_vec)
 {
 	struct ivec *test;
 	int i, *idx;
+
 	test = ivec_new(10);
 	i = 0;
 	TS_VEC_FOREACH(idx, test) {
 		*idx = i++;
 	}
+
 	i = 9;
 	TS_VEC_RFOREACH(idx, test) {
 		ck_assert_int_eq(*idx, i--);
@@ -25,6 +27,7 @@ START_TEST(test_vec)
 	TS_VEC_FOREACH(idx, test) {
 		*idx = i++;
 	}
+
 	i = 19;
 	TS_VEC_RFOREACH(idx, test) {
 		ck_assert_int_eq(*idx, i--);
@@ -56,6 +59,7 @@ START_TEST(test_vec2)
 	TS_VEC_FOREACH(idx, test) {
 		*idx = strdup(expect[i++]);
 	}
+
 	i = 4;
 	TS_VEC_RFOREACH(idx, test) {
 		ck_assert_str_eq(*idx, expect[i--]);
