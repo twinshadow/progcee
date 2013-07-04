@@ -32,7 +32,7 @@
 	struct __name *						\
 	__name##_new(size_t count){				\
 		struct __name *ptr;				\
-		if ((count + 2) * sizeof(__type) > SIZE_MAX) {   \
+		if (count >= (SIZE_MAX/sizeof(__type) - 2)) {   \
 			errno = EACCES;				\
 			return NULL;				\
 		}						\
