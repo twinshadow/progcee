@@ -1,6 +1,6 @@
 OBJ_NAME=	$(shell basename "${PWD}")
 
-SRCS=		$(wildcard [!(check_)]*.c)
+SRCS=		$(shell find \( -name '*.c' -not -name 'check_*' \) -printf '%P\n')
 CHECK_SRCS=	$(wildcard check_*.c)
 OBJS=		$(SRCS:.c=.o)
 CHECK_OBJS=	$(CHECK_SRCS:.c=.co)
