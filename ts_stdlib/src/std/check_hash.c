@@ -1,14 +1,37 @@
 #include "twinshadow/check.h"
 #include "twinshadow/hash.h"
 
-START_TEST(test_hash)
+START_TEST(test_hash_add)
 {
 	struct ts_table_s *table;
 	struct ts_table_item_s **item;
+	char *test;
+
 	table = ts_table_new(4);
-	char *test = "Hello World!";
+	test = "Hello World!";
+
+	ts_table_add(test, strlen(test), table);
 	item = ts_table_lookup(test, strlen(test), table);
-	ck_assert(item != NULL);
+	ck_assert(*item != NULL);
+}
+END_TEST
+
+START_TEST(test_hash_rem)
+{
+	struct ts_table_s *table;
+	struct ts_table_item_s **item;
+	char *test;
+
+	table = ts_table_new(4);
+	test = "Hello World!";
+
+	ts_table_add(test, strlen(test), table);
+	item = ts_table_lookup(test, strlen(test), table);
+	ck_assert(*item != NULL);
+
+	ts_table_rem(test, strlen(test), table);
+	item = ts_table_lookup(test, strlen(test), table);
+	ck_assert(*item == NULL);
 }
 END_TEST
 
@@ -19,7 +42,8 @@ main(void)
 
 	Suite *s = suite_create("check_hash");
 	TCase *tc = tcase_create("Main");
-	tcase_add_test(tc, test_hash);
+	tcase_add_test(tc, test_hash_add);
+	tcase_add_test(tc, test_hash_rem);
 	suite_add_tcase(s, tc);
 
 	SRunner *sr = srunner_create(s);
