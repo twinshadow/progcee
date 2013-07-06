@@ -12,7 +12,7 @@ endif
 ifndef TOP
 TOP=		../..
 CFLAGS+=	-I${TOP}/includes -g -fPIC -Wall -Werror
-PREFIX=		${TOP}/obj
+PREFIX=		${TOP}/pkg
 endif
 
 ${OBJ_NAME}.a : ${OBJS}
@@ -48,8 +48,8 @@ analyze:
 
 install: ${OBJ_NAME}.a ${OBJ_NAME}.so
 	mkdir -p ${PREFIX}/lib
-	install ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
-	install ${OBJ_NAME}.so ${PREFIX}/lib/${OBJ_NAME}.so
+	install -m0644 ${OBJ_NAME}.a ${PREFIX}/lib/${OBJ_NAME}.a
+	install -m0755 ${OBJ_NAME}.so ${PREFIX}/lib/${OBJ_NAME}.so
 
 clean:
 	rm -f *.o *.co ${OBJ_NAME}.a ${OBJ_NAME}.so
