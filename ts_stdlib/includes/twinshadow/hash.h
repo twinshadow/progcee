@@ -24,12 +24,14 @@ struct ts_table_s {
 	size_t len;
 };
 
+/* Memory */
 struct ts_table_item_s * ts_table_item_new(void *ptr, size_t len, struct ts_table_s *table);
 struct ts_table_s * ts_table_new(size_t logsize);
 void ts_table_free(struct ts_table_s *table);
 void ts_table_init(struct ts_table_s *table);
 void ts_table_resize(struct ts_table_s *table);
 
+/* Manipulation */
 struct ts_table_item_s ** ts_table_lookup(void *ptr, size_t len, struct ts_table_s *table);
 struct ts_table_item_s * ts_table_fetch(void *ptr, size_t len, struct ts_table_s *table);
 struct ts_table_item_s * ts_table_add(void *ptr, size_t len, struct ts_table_s *table);

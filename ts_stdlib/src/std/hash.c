@@ -115,6 +115,7 @@ ts_table_add(void *ptr, size_t len, struct ts_table_s *table)
 	if (*item != NULL)
 		return (NULL);
 	*item = ts_table_item_new(ptr, len, table);
+	table->count++;
 	return (*item);
 }
 
@@ -135,5 +136,6 @@ ts_table_rem(void *ptr, size_t len, struct ts_table_s *table)
 	if ((*item)->next != NULL)
 		next = (*item)->next;
 	free(*item);
+	table->count--;
 	*item = next;
 }
