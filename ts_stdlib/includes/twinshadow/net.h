@@ -1,6 +1,11 @@
 #ifndef TWINSHADOW_NET_H
 #define TWINSHADOW_NET_H
 
+#include <errno.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
 #define INADDR(X) {(X->sa_family == AF_INET) ? \
 			(((struct sockaddr_in*)X)->sin_addr) : \
 			(((struct sockaddr_in6*)X)->sin6_addr)}

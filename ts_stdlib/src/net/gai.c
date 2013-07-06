@@ -1,5 +1,6 @@
-#include <netdb.h>
 #include <string.h>
+
+#include "twinshadow/net.h"
 
 /*
  * Return the addrinfo from the selected options

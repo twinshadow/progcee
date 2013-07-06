@@ -15,6 +15,7 @@
 
 # Clang analyze
 *.plist
+*.gch
 
 # scratch
 *~

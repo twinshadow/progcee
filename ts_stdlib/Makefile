@@ -2,7 +2,9 @@ TOP=		$(realpath ${PWD})
 SUBDIRS=	$(shell find src -maxdepth 1 -mindepth 1 -type d -exec basename \{\} \;)
 PREFIX=		${TOP}/pkg
 
-CFLAGS+=	-I${PWD}/includes -g -fPIC -Wall -Werror
+INCLUDES=	-I${PWD}/includes
+
+CFLAGS+=	-g -fPIC -Wall -Werror ${INCLUDES}
 
 all: ${SUBDIRS}
 
@@ -33,7 +35,13 @@ install: $(SUBDIRS:=-install)
 	cp -r includes/twinshadow ${PREFIX}/include
 	ar -cvq ${PREFIX}/lib/twinshadow.a $(shell find src -name '*.o')
 	${CC} ${CFLAGS} ${LDFLAGS} -shared -o ${PREFIX}/lib/twinshdow.so $(shell find src -name '*.o')
+docs:
+	cldoc ${CFLAGS} -- \
+		--language=c --report \
+		--merge=${TOP}/docs/_static \
+		--output=${TOP}/docs \
+		$(shell find \( -name '*.c' -or -name '*.h' \) -not -name 'check_*')
 
-everything: clean analyze check all install
+everything: clean analyze check all docs install
 
-.PHONY: clean
+.PHONY: clean docs

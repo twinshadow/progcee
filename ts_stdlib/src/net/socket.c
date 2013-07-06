@@ -1,5 +1,6 @@
-#include <netdb.h>
 #include <unistd.h>
+
+#include "twinshadow/net.h"
 
 /*
  * return socket connection from addrinfo
