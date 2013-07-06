@@ -7,6 +7,7 @@ START_TEST(test_strshift_pos1)
 	strcpy(buf, "0123456789");
 	ts_strshift(3, buf);
 	ck_assert_str_eq(buf, "7890123456");
+	free(buf);
 }
 END_TEST
 
@@ -16,6 +17,7 @@ START_TEST(test_strshift_pos2)
 	strcpy(buf, "0123456789");
 	ts_strshift(8, buf);
 	ck_assert_str_eq(buf, "2345678901");
+	free(buf);
 }
 END_TEST
 
@@ -25,6 +27,7 @@ START_TEST(test_strshift_empty)
 	strcpy(buf, "");
 	ts_strshift(3, buf);
 	ck_assert_str_eq(buf, "");
+	free(buf);
 }
 END_TEST
 
@@ -34,6 +37,7 @@ START_TEST(test_strshift_neg1)
 	strcpy(buf, "0123456789");
 	ts_strshift(-3, buf);
 	ck_assert_str_eq(buf, "3456789012");
+	free(buf);
 }
 END_TEST
 
@@ -43,6 +47,7 @@ START_TEST(test_strshift_neg2)
 	strcpy(buf, "0123456789");
 	ts_strshift(-8, buf);
 	ck_assert_str_eq(buf, "8901234567");
+	free(buf);
 }
 END_TEST
 

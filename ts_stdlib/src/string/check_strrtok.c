@@ -17,6 +17,8 @@ START_TEST(test_strrtok)
 	char *ptr = NULL;
 	for (i = 0; (ptr = ts_strrtok(test, ' ')); i++)
 		ck_assert_str_eq(ptr, xpct[i]);
+
+	free(test);
 }
 END_TEST
 

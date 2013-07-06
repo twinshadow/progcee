@@ -9,6 +9,8 @@ START_TEST(test_strstrip)
 
 	ts_strstrip(test);
 	ck_assert_str_eq(test, xpct);
+
+	free(test);
 }
 END_TEST
 

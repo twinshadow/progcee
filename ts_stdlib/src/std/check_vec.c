@@ -64,7 +64,11 @@ START_TEST(test_vec2)
 	TS_VEC_RFOREACH(idx, test) {
 		ck_assert_str_eq(*idx, expect[i--]);
 	}
-	free(test);
+
+	TS_VEC_FOREACH(idx, test) {
+		free(*idx);
+	}
+	svec_free(test);
 }
 END_TEST
 

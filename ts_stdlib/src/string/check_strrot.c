@@ -9,6 +9,8 @@ START_TEST(test_strrot)
 
 	ts_strrot(13, buf);
 	ck_assert_str_eq(buf, xpct);
+
+	free(buf);
 }
 END_TEST
 
